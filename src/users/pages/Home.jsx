@@ -6,7 +6,17 @@ const Home = () => {
   return (
     <>
     <Header/>
-    <h1>Home</h1>
+      {/* landing */}
+      <div  className="flex flex-col h-screen justify-center items-center bg-[url(/landing.jpg)] bg-cover bg-center text-white">
+      <h1 className='text-5xl  font-bold'>Wonderful Gifts</h1>
+      <p>Give your family and friends a book</p>
+      <div className="mt-9">
+        <input type="text" placeholder='Search Books' />
+      </div>
+      </div>
+      {/* arrivel */}
+      {/* author */}
+      {/* testimony */}
     <Footer/>
     </>
   )
