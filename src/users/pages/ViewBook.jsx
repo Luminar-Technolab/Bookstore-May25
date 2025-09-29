@@ -18,7 +18,7 @@ const ViewBook = () => {
             <img className='w-full'  src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book" />
           </div>
           <div className="col-span-3">
-              <div className='flex justify-between'>
+              <div className='flex justify-between mt-5 md:mt-0'>
                 <h1 className="text-xl font-bold ">Title</h1>
                 <button onClick={()=>setModalStatus(true)} className='text-gray-400'><FontAwesomeIcon icon={faEye} /></button>
               </div>
@@ -46,24 +46,25 @@ const ViewBook = () => {
     {/* modal */}
     {
       modalStatus &&
-      <div className='relative z-10' onClick={()=>setModalStatus(false)}>
+      <div className='relative z-10 overflow-y-auto' onClick={()=>setModalStatus(false)}>
         <div className="bg-gray-500/75 fixed inset-0 ">
-          <div className="flex justify-center items-center min-h-screen ">
-            <div style={{width:'900px'}} className='bg-white rounded-2xl'>
+          <div className="flex justify-center items-center min-h-screen scroll-auto">
+            <div   className='bg-white rounded-2xl  md:w-250 w-100  '>
               <div className='bg-black text-white flex justify-between items-center p-3 '>
                 <h3>Books Images</h3>
                 <FontAwesomeIcon onClick={()=>setModalStatus(false)} icon={faXmark}/>
               </div>
-              <div className='my-5 ml-5'>
+              <div className=' relative  p-5'>
                 <p className='text-blue-600 '>
                   <FontAwesomeIcon icon={faCamera} className='me-2'/>
                   Camera click of the book in the hand of seller
                 </p>
                 
-                <div className="md:flex flex-wrap my-4">
+                <div className="md:flex flex-wrap my-4  overflow-y-auto ">
                 {/* duplicate images */}
+                <img width={'250px'} height={'250px'} className='mx-2 md:mb-0 mb-2'  src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book images" />
                 <img width={'250px'} height={'250px'} className='mx-2'  src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book images" />
-                
+                <img width={'250px'} height={'250px'} className='mx-2'  src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book images" /> 
                 </div>  
               </div>
             </div>
