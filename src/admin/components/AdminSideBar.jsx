@@ -13,7 +13,7 @@ const AdminSideBar = () => {
           <Link to={'/admin-dashboard'}><FontAwesomeIcon icon={faHome}/> Home</Link>
         </div>
         <div className="mt-3">
-          <Link to={'/admin-resources'}><FontAwesomeIcon icon={faBook}/> Resources </Link>
+          <Link to={'/admin-resources'}><FontAwesomeIcon icon={faBook}/> Collections </Link>
         </div>
         <div className="mt-3">
                      <Link to={'/admin-careers'}><FontAwesomeIcon icon={faGraduationCap} /> Careers</Link>
