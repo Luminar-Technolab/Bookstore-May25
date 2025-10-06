@@ -2,12 +2,25 @@ import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link } from 'react-router-dom';
+import { ToastContainer,toast } from 'react-toastify';
 
 const Auth = ({register}) => {
 
   const [viewPasswordStatus,setViewPasswordStatus] = useState(false)
   const [userDetails,setUserDetails] = useState({username:"",email:"",password:""})
 
+  // console.log(userDetails);
+
+  const handleRegister  = ()=>{
+    console.log("Inside handleRegister");
+    const {username,email,password} = userDetails
+    if(!username || !email || !password){
+      toast.info("Please fill the form completely!!!")
+    }else{
+      toast.success("Proceed to API Call")
+    }
+  }
+  
   return (
     <div className='w-full min-h-screen flex justify-center items-center flex-col bg-[url("/backgroundImg.jpg")] bg-cover bg-center'>
       <div className="p-10">
@@ -37,9 +50,9 @@ const Auth = ({register}) => {
             <div className='text-center'>
               {
               register?              
-                <button className='bg-green-700 p-2 w-full rounded'>Register</button>
+                <button type='button'  onClick={handleRegister} className='bg-green-700 p-2 w-full rounded'>Register</button>
               :
-              <button className='bg-green-700 p-2 w-full rounded'>Login</button>
+              <button type='button' className='bg-green-700 p-2 w-full rounded'>Login</button>
               }
             </div>
             {/* google Authentication */}
@@ -55,6 +68,18 @@ const Auth = ({register}) => {
           </form>
         </div>
       </div>
+      <ToastContainer
+position="top-right"
+autoClose={3000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick={false}
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="colored"
+/>
     </div>
   )
 }
