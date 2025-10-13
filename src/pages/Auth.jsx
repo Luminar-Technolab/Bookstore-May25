@@ -1,23 +1,63 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faUser } from "@fortawesome/free-regular-svg-icons";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer,toast } from 'react-toastify';
+import {loginAPI, registerAPI} from '../services/allAPI'
 
 const Auth = ({register}) => {
-
+  const navigate = useNavigate()
   const [viewPasswordStatus,setViewPasswordStatus] = useState(false)
   const [userDetails,setUserDetails] = useState({username:"",email:"",password:""})
 
   // console.log(userDetails);
 
-  const handleRegister  = ()=>{
-    console.log("Inside handleRegister");
+  const handleRegister  = async ()=>{
+    // console.log("Inside handleRegister");
     const {username,email,password} = userDetails
     if(!username || !email || !password){
       toast.info("Please fill the form completely!!!")
     }else{
-      toast.success("Proceed to API Call")
+      // toast.success("Proceed to API Call")
+      try{
+        const result = await registerAPI(userDetails)
+        console.log(result);
+        if(result.status==200){
+          toast.success("Register successfully!!! Please Login....")
+          setUserDetails({username:"",email:"",password:""})
+          navigate('/login')
+        }else if(result.status==409){
+          toast.warning(result.response.data)
+          setUserDetails({username:"",email:"",password:""})
+          navigate('/login')
+        }else{
+          console.log(result);          
+        }
+      }catch(err){
+        console.log(err);        
+      }
+    }
+  }
+
+  const handleLogin = async()=>{
+    const {email,password} = userDetails
+    if(!email || !password){
+      toast.info("Please fill the form completely!!!")
+    }else{
+      // toast.success("Proceed to API Call")
+      try{
+        const result = await loginAPI(userDetails)
+        console.log(result);
+        if(result.status==200){
+          
+        }else if(result.status==404){
+         
+        }else{
+          console.log(result);          
+        }
+      }catch(err){
+        console.log(err);        
+      }
     }
   }
   
@@ -52,7 +92,7 @@ const Auth = ({register}) => {
               register?              
                 <button type='button'  onClick={handleRegister} className='bg-green-700 p-2 w-full rounded'>Register</button>
               :
-              <button type='button' className='bg-green-700 p-2 w-full rounded'>Login</button>
+              <button type='button' onClick={handleLogin} className='bg-green-700 p-2 w-full rounded'>Login</button>
               }
             </div>
             {/* google Authentication */}
