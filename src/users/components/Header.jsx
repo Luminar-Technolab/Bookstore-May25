@@ -6,12 +6,23 @@ import {
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
   const [listStatus,setListStatus] = useState(false)
-  
+  const [token,setToken] = useState("")
+  const [userDp,setUserDp] = useState("")
+
+  useEffect(()=>{
+    if(sessionStorage.getItem("token")){
+      const token = sessionStorage.getItem("token")
+      setToken(token)
+      const user = JSON.parse(sessionStorage.getItem("user"))
+      setUserDp(user.profile)
+    }
+  },[])
+
   return (
     <>
       <div className="grid grid-cols-3 p-3">
@@ -35,12 +46,19 @@ const Header = () => {
           <FontAwesomeIcon icon={faXTwitter} />
           <FontAwesomeIcon icon={faFacebook} />
           {/* login link */}
-          <Link to={"/login"}>
+          {!token ? <Link to={"/login"}>
             <button className="border border-black  rounded px-3 py-2 ms-3 hover:bg-black hover:text-white">
               {" "}
               <FontAwesomeIcon icon={faUser} className="me-1" /> Login{" "}
             </button>
           </Link>
+          :
+          <div className="">
+            <button>
+              <img width={'40px'} height={'40px'} src={userDp==""?"https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-File.png":""} alt="user" />
+            </button>
+          </div>
+          }
         </div>
       </div>
       <nav className="w-full p-3 bg-black text-white md:flex justify-center items-center">

@@ -4,6 +4,7 @@ import { faEye, faEyeSlash, faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer,toast } from 'react-toastify';
 import {loginAPI, registerAPI} from '../services/allAPI'
+import { GoogleLogin,GoogleOAuthProvider } from '@react-oauth/google';
 
 const Auth = ({register}) => {
   const navigate = useNavigate()
@@ -31,7 +32,9 @@ const Auth = ({register}) => {
           setUserDetails({username:"",email:"",password:""})
           navigate('/login')
         }else{
-          console.log(result);          
+          console.log(result);   
+          toast.error("Something went wrong!!!")
+          setUserDetails({username:"",email:"",password:""})       
         }
       }catch(err){
         console.log(err);        
@@ -49,11 +52,25 @@ const Auth = ({register}) => {
         const result = await loginAPI(userDetails)
         console.log(result);
         if(result.status==200){
-          
+          toast.success("Login successfully!!!")
+          sessionStorage.setItem("user",JSON.stringify(result.data.user))
+          sessionStorage.setItem("token",result.data.token)
+          setTimeout(() => {
+            if(result.data.user.role=="admin"){
+              navigate('/admin-dashboard')
+            }else{
+              navigate('/')
+            }
+          }, 2500);
+        }else if(result.status==401){
+          toast.warning(result.response.data)
+          setUserDetails({username:"",email:"",password:""})
         }else if(result.status==404){
-         
+          toast.warning(result.response.data)
+          setUserDetails({username:"",email:"",password:""})       
         }else{
-          console.log(result);          
+          toast.error("Something went wrong!!!")
+          setUserDetails({username:"",email:"",password:""})       
         }
       }catch(err){
         console.log(err);        
@@ -96,7 +113,21 @@ const Auth = ({register}) => {
               }
             </div>
             {/* google Authentication */}
-
+              <div className="my-5 text-center">
+                {!register && <p>----------------or----------------</p>}
+                {!register && <div className='my-5 flex justify-center w-full'>
+                    <GoogleOAuthProvider clientId="304531247476-58f940f3b0dgrupg95cdo8b51fspupdv.apps.googleusercontent.com" >
+                      <GoogleLogin 
+                        onSuccess={credentialResponse => {
+                          console.log(credentialResponse);
+                        }}
+                        onError={() => {
+                          console.log('Login Failed');
+                        }}
+                      />
+                    </GoogleOAuthProvider>
+                  </div>}
+              </div>
             <div className='my-5 text-center'>
               {
                 register?

@@ -348,6 +348,22 @@
             - req : request object
             - res : response object
             - next() : to pass control to the next middleware function
+    6. Authentication & Authorization
+        - Authentication is the process of verifying the identity of a user or system to ensure they are who they claim to be.
+        - Authorization is the process of determining and granting access rights to an authenticated user or system.
+    7. JSON Web Token (JWT)
+        - A JSON Web Token (JWT) is a secure way to send information between a client and a server. 
+        - It is mainly used in web applications and APIs to verify users and prevent unauthorized access. 
+        - A JWT is JSON data secured with a cryptographic signature.
+        - JWT Token Structure : Header. Payload. Signature
+        - JWT token Works
+            - Client request for login
+            - Server send jwt token to client along with the response
+            - Add jwt token with further request from client
+            - server verify token before processing request
+        - Methods
+            - sign(Payload,secret) : used to generate token 
+            - verify(token,secret) : used to verify token
             
     STEPS TO BUILD EXPRESS SERVER
     -------------------------------
@@ -355,7 +371,7 @@
     2. using 'npm init -y' command create package.json, update script with 'start' as 'node index.js'
     3. create entry point of app : index.js
     4. create .env file
-    5. install packages: express, cors, dotenv, mongoose
+    5. install packages: express, cors, dotenv, mongoose, jsonwebtoken
     6. create .gitignore add files/folders
     7. steps for creating server in index.js file
         - import express, cors, dotenv,
