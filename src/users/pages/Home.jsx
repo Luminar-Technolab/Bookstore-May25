@@ -59,7 +59,7 @@ const Home = () => {
             </div>
         </div>
         <div className="text-center my-10">
-          <Link to={'/all-books'} className='bg-blue-600 p-3 text-white font-bold'>Explore More...</Link>
+          <Link to={'/all-books'} className='bg-blue-800 p-3 text-white font-bold'>Explore More...</Link>
         </div>
       </section>
       {/* author */}

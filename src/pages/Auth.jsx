@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer,toast } from 'react-toastify';
-import {loginAPI, registerAPI} from '../services/allAPI'
+import {googleLoginAPI, loginAPI, registerAPI} from '../services/allAPI'
 import { GoogleLogin,GoogleOAuthProvider } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 
 const Auth = ({register}) => {
   const navigate = useNavigate()
@@ -78,6 +79,36 @@ const Auth = ({register}) => {
     }
   }
   
+  const handleGoogleLogin = async(credentialResponse)=>{
+    console.log("Inside handleGoogleLogin");
+    const credential = credentialResponse.credential
+    const details = jwtDecode(credential)
+    console.log(details);
+    try {
+      const result = await googleLoginAPI({username:details.name,email:details.email,password:'googlepswd',profile:details.picture})
+      console.log(result);
+      if(result.status==200){
+        toast.success("Login Successfull!!!")
+        sessionStorage.setItem("user",JSON.stringify(result.data.user))
+        sessionStorage.setItem("token",result.data.token)
+        setTimeout(() => {
+          if(result.data.user.role=="admin"){
+            navigate('/admin-dashboard')
+          }else{
+            navigate('/')
+          }
+        }, 2500);
+      }else{
+        toast.error("Something went wrong!!!")
+      }
+    }
+    catch(err){
+      console.log(err);
+      
+    }
+
+  }
+
   return (
     <div className='w-full min-h-screen flex justify-center items-center flex-col bg-[url("/backgroundImg.jpg")] bg-cover bg-center'>
       <div className="p-10">
@@ -116,16 +147,15 @@ const Auth = ({register}) => {
               <div className="my-5 text-center">
                 {!register && <p>----------------or----------------</p>}
                 {!register && <div className='my-5 flex justify-center w-full'>
-                    <GoogleOAuthProvider clientId="304531247476-58f940f3b0dgrupg95cdo8b51fspupdv.apps.googleusercontent.com" >
-                      <GoogleLogin 
+                    <GoogleLogin 
                         onSuccess={credentialResponse => {
                           console.log(credentialResponse);
+                          handleGoogleLogin(credentialResponse)
                         }}
                         onError={() => {
                           console.log('Login Failed');
-                        }}
+                        }} 
                       />
-                    </GoogleOAuthProvider>
                   </div>}
               </div>
             <div className='my-5 text-center'>

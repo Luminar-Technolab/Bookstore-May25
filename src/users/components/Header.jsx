@@ -3,17 +3,19 @@ import {
   faInstagram,
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import { faUser } from "@fortawesome/free-regular-svg-icons";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faAddressCard, faUser } from "@fortawesome/free-regular-svg-icons";
+import { faBars, faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [listStatus,setListStatus] = useState(false)
   const [token,setToken] = useState("")
   const [userDp,setUserDp] = useState("")
-
+  const [dropDownStatus,setDropDownStatus] = useState(false)
+  const navigate = useNavigate()
+   
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
       const token = sessionStorage.getItem("token")
@@ -22,6 +24,11 @@ const Header = () => {
       setUserDp(user.profile)
     }
   },[])
+
+  const logout = ()=>{
+    sessionStorage.clear()
+    navigate('/')
+  }
 
   return (
     <>
@@ -53,10 +60,16 @@ const Header = () => {
             </button>
           </Link>
           :
-          <div className="">
-            <button>
-              <img width={'40px'} height={'40px'} src={userDp==""?"https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-File.png":""} alt="user" />
+          <div className="relative inline-block text-left">
+            <button onClick={()=>setDropDownStatus(!dropDownStatus)} className="w-full bg-white px-3 py-2  shadow-xs hover:bg-gray-50">
+                <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}} className="mx-2" src={userDp==""?"http://pluspng.com/img-png/user-png-icon-male-user-icon-512.png":""} alt="user" />
             </button>
+            { dropDownStatus && <div className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden">
+              <div className="py-1">
+                <Link className="block px-4 py-2 text-sm text-gray-700" to={'/profile'}> <FontAwesomeIcon icon={faAddressCard} className="me-2" /> Profile </Link>
+                <button onClick={logout} className="block px-4 py-2 text-sm text-gray-700"><FontAwesomeIcon icon={faPowerOff} className="me-2" /> Logout</button>
+              </div>
+            </div>}
           </div>
           }
         </div>
