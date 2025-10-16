@@ -23,10 +23,13 @@ const Header = () => {
       const user = JSON.parse(sessionStorage.getItem("user"))
       setUserDp(user.profile)
     }
-  },[])
+  },[token])
 
   const logout = ()=>{
     sessionStorage.clear()
+    setToken("")
+    setUserDp("")
+    setDropDownStatus(false)
     navigate('/')
   }
 
@@ -62,7 +65,7 @@ const Header = () => {
           :
           <div className="relative inline-block text-left">
             <button onClick={()=>setDropDownStatus(!dropDownStatus)} className="w-full bg-white px-3 py-2  shadow-xs hover:bg-gray-50">
-                <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}} className="mx-2" src={userDp==""?"http://pluspng.com/img-png/user-png-icon-male-user-icon-512.png":""} alt="user" />
+                <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}} className="mx-2" src={userDp==""?"http://pluspng.com/img-png/user-png-icon-male-user-icon-512.png":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp:"http://pluspng.com/img-png/user-png-icon-male-user-icon-512.png"} alt="user" />
             </button>
             { dropDownStatus && <div className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden">
               <div className="py-1">
