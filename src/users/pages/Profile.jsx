@@ -3,12 +3,32 @@ import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleCheck, faL } from '@fortawesome/free-solid-svg-icons'
+import { faSquarePlus } from '@fortawesome/free-regular-svg-icons'
 
 const Profile = () => {
   const [sellBookStatus,setSellBookStatus] = useState(true)
   const [bookStatus,setBookStatus] = useState(false)
   const [purchaseStatus,setPurchaseStatus] = useState(false)
+  const [bookDetails,setBookDetails] = useState({
+    title:"",author:"",noOfPages:"",imageUrl:"",price:"",discountPrice:"",abstract:"",publisher:"",language:"",isbn:"",category:"",uploadImges:[]
+  })
+  console.log(bookDetails);
+  const [preview,setPreview] = useState("")
+  const [previewList,setPreviewList] = useState([])
 
+  const handleUploadBookImage = (e)=>{
+    // console.log(e.target.files[0]);
+    const fileArray = bookDetails.uploadImges
+    fileArray.push(e.target.files[0])
+    setBookDetails({...bookDetails,uploadImges:fileArray})
+    const url = URL.createObjectURL(e.target.files[0])
+    setPreview(url)
+    // console.log(url);
+    const bookImgArray = previewList
+    bookImgArray.push(url)
+    setPreviewList(bookImgArray)
+  }
+  
   return (
     <>
     <Header/>
@@ -42,47 +62,62 @@ const Profile = () => {
             <div className="md:grid grid-cols-2 mt-10 w-full">
               <div className='px-3'>
                 <div className="mb-3 ">
-                  <input type="text" placeholder='Title' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
+                  <input value={bookDetails.title} onChange={e=>setBookDetails({...bookDetails,title:e.target.value})} type="text" placeholder='Title' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
                 </div>
                 <div className="mb-3">
-                  <input type="text" placeholder='Author' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
+                  <input value={bookDetails.author} onChange={e=>setBookDetails({...bookDetails,author:e.target.value})} type="text" placeholder='Author' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
                 </div>
                 <div className="mb-3">
-                  <input type="text" placeholder='No. of Pages' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
+                  <input value={bookDetails.noOfPages} onChange={e=>setBookDetails({...bookDetails,noOfPages:e.target.value})} type="text" placeholder='No. of Pages' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
                 </div>
                 <div className="mb-3">
-                  <input type="text" placeholder='Image URL' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
+                  <input value={bookDetails.imageUrl} onChange={e=>setBookDetails({...bookDetails,imageUrl:e.target.value})} type="text" placeholder='Image URL' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
                 </div>
                 <div className="mb-3">
-                  <input type="text" placeholder='Price' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
+                  <input value={bookDetails.price} onChange={e=>setBookDetails({...bookDetails,price:e.target.value})} type="text" placeholder='Price' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
                 </div>
                 <div className="mb-3">
-                  <input type="text" placeholder='Discount Price' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
+                  <input value={bookDetails.discountPrice} onChange={e=>setBookDetails({...bookDetails,discountPrice:e.target.value})} type="text" placeholder='Discount Price' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
                 </div>
                 <div className="mb-3">
-                  <textarea placeholder='Abstract' name="" id="" rows={'5'} className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" ></textarea>
+                  <textarea value={bookDetails.abstract} onChange={e=>setBookDetails({...bookDetails,abstract:e.target.value})} placeholder='Abstract' name="" id="" rows={'5'} className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" ></textarea>
                 </div>
               </div>
               <div className="px-3">
                 
                 <div className="mb-3">
-                  <input type="text" placeholder='Publisher' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
+                  <input value={bookDetails.publisher} onChange={e=>setBookDetails({...bookDetails,publisher:e.target.value})} type="text" placeholder='Publisher' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
                 </div>
                 <div className="mb-3">
-                  <input type="text" placeholder='Language' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
+                  <input value={bookDetails.language} onChange={e=>setBookDetails({...bookDetails,language:e.target.value})} type="text" placeholder='Language' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
                 </div>
                  <div className="mb-3">
-                  <input type="text" placeholder='ISBN' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
+                  <input value={bookDetails.isbn} onChange={e=>setBookDetails({...bookDetails,isbn:e.target.value})} type="text" placeholder='ISBN' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
                 </div>
                 <div className="mb-3">
-                  <input type="text" placeholder='Category' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
+                  <input value={bookDetails.category} onChange={e=>setBookDetails({...bookDetails,category:e.target.value})} type="text" placeholder='Category' className="w-full p-2  rounded placeholder-gray-400 text-black bg-white" />
                 </div>
                 <div className="mb-3 flex justify-center items-center mt-10">
                   <label htmlFor="bookImage">
-                    <input type="file" name="" id="bookImage" className='hidden'/>
-                    <img src="https://cdn.pixabay.com/photo/2016/01/03/00/43/upload-1118929_1280.png" width={'200px'} height={'200px'} alt="book image" />
+                    <input onChange={e=>handleUploadBookImage(e)} type="file" name="" id="bookImage" className='hidden'/>
+                    { !preview ?
+                      <img src="https://cdn.pixabay.com/photo/2016/01/03/00/43/upload-1118929_1280.png" width={'200px'} height={'200px'} alt="book" />
+                    :
+                    <img src={preview} width={'200px'} height={'200px'} alt="book" />
+                    }
                   </label>
                 </div>
+                {preview && <div className=" flex justify-center items-center ">
+                  {
+                    previewList?.map(imgUrl=>(
+                      <img src={imgUrl} width={'70px'} height={'70px'} alt="book" className='mx-3' />
+                    ))
+                  }
+                  { previewList.length<3 && <label htmlFor="bookImages">
+                    <input onChange={e=>handleUploadBookImage(e)} type="file" name="" id="bookImages" className='hidden'/>
+                    <FontAwesomeIcon icon={faSquarePlus} className='fa-2x shadow ms-3 text-gray-500'/>
+                  </label>}
+                </div>}
               </div>
             </div>
             {/* footer */}
