@@ -4,8 +4,31 @@ import Footer from '../../components/Footer'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { getHomeBooksAPI } from '../../services/allAPI';
+import { useEffect } from 'react';
 
 const Home = () => {
+  const [homeBooks,setHomeBooks] = useState([])
+
+  useEffect(()=>{
+    getHomeBooks()
+  },[])
+
+  console.log(homeBooks);
+
+  
+  const getHomeBooks = async ()=>{
+    try{
+      const result = await getHomeBooksAPI()
+      if(result.status==200){
+        setHomeBooks(result.data)
+      }
+    }catch(err){
+      console.log(err);      
+    }
+  }
+
   return (
     <>
     <Header/>
@@ -21,42 +44,25 @@ const Home = () => {
         </div>
       </div>
       {/* arrival */}
-      <section className='md:px-40 p-5 flex flex-col justify-center items-center'>
+      <section className='md:px-40 p-5 my-5 flex flex-col justify-center items-center'>
         <h1 className='text-2xl font-bold'>NEW ARRIVALS</h1>
         <h1 className='text-3xl'>Explore Our Latest Collection</h1>
         <div className="md:grid grid-cols-4 w-full my-5">
-          <div className="shadow  rounded p-3 mx-4">
-              <img width={'100%'} height={'300px'} src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book" />
-              <div className="flex flex-col justify-center items-center mt-4">
-                <p className="text-blue-700 font-bold text-lg">Author</p>
-                <p >Book Title</p>
-                <p>$ 400</p>
-              </div>
-            </div>
-            <div className="shadow p-3 mx-4 rounded">
-              <img width={'100%'} height={'300px'} src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book" />
-              <div className="flex flex-col justify-center items-center mt-4">
-                <p className="text-blue-700 font-bold text-lg">Author</p>
-                <p >Book Title</p>
-                <p>$ 400</p>
-              </div>
-            </div>
-            <div className="shadow p-3 mx-4 rounded">
-              <img width={'100%'} height={'300px'} src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book" />
-              <div className="flex flex-col justify-center items-center mt-4">
-                <p className="text-blue-700 font-bold text-lg">Author</p>
-                <p >Book Title</p>
-                <p>$ 400</p>
-              </div>
-            </div>
-            <div className="shadow p-3 mx-4 rounded">
-              <img width={'100%'} height={'300px'} src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book" />
-              <div className="flex flex-col justify-center items-center mt-4">
-                <p className="text-blue-700 font-bold text-lg">Author</p>
-                <p >Book Title</p>
-                <p>$ 400</p>
-              </div>
-            </div>
+          {
+            homeBooks.length>0?
+              homeBooks?.map((book,index)=>(
+                <div key={index} className="shadow  rounded p-3 mx-4">
+                  <img width={'100%'} height={'300px'} src={book?.imageUrl} alt="book" />
+                  <div className="flex flex-col justify-center items-center mt-4">
+                    <p className="text-blue-700 font-bold text-lg">{book?.author}</p>
+                    <p >{book?.title}</p>
+                    <p>$ {book?.discountPrice}</p>
+                  </div>
+                </div>
+              ))
+          :
+          <p>Loading ... </p>
+           }
         </div>
         <div className="text-center my-10">
           <Link to={'/all-books'} className='bg-blue-800 p-3 text-white font-bold'>Explore More...</Link>
