@@ -47,7 +47,7 @@ const Home = () => {
       <section className='md:px-40 p-5 my-5 flex flex-col justify-center items-center'>
         <h1 className='text-2xl font-bold'>NEW ARRIVALS</h1>
         <h1 className='text-3xl'>Explore Our Latest Collection</h1>
-        <div className="md:grid grid-cols-4 w-full my-5">
+        <div className="md:grid grid-cols-4 w-full my-10">
           {
             homeBooks.length>0?
               homeBooks?.map((book,index)=>(

@@ -28,7 +28,10 @@ export const getHomeBooksAPI = async ()=>{
 export const addBookAPI = async (reqBody,reqHeader)=>{
   return await  commonAPI("POST",`${SERVERURL}/add-book`,reqBody,reqHeader)
 }
-// view all books
+// view all books - called allbooks when page load
+export const getAllBooksAPI = async (reqHeader)=>{
+  return await  commonAPI("GET",`${SERVERURL}/all-books`,{},reqHeader)
+}
 // view single book
 
 // profile update
