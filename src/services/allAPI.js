@@ -32,7 +32,10 @@ export const addBookAPI = async (reqBody,reqHeader)=>{
 export const getAllBooksAPI = async (reqHeader)=>{
   return await  commonAPI("GET",`${SERVERURL}/all-books`,{},reqHeader)
 }
-// view single book
+// view single book - called by viewBook component when it load in browser
+export const getSingleBookAPI = async (bookId,reqHeader)=>{
+  return await  commonAPI("GET",`${SERVERURL}/books/${bookId}/view`,{},reqHeader)
+}
 
 // profile update
 // purchased  book

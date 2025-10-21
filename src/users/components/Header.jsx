@@ -82,12 +82,25 @@ const Header = () => {
         <div className="flex justify-between items-center text-2xl md:hidden">
           <button onClick={()=>setListStatus(!listStatus)}><FontAwesomeIcon icon={faBars} /></button>
           {/* login link */}
-          <Link to={"/login"}>
-            <button  className="border border-black  rounded px-3 py-2 ms-3 hover:bg-black hover:text-white">
+          {!token ? <Link to={"/login"}>
+            <button className="border border-black  rounded px-3 py-2 ms-3 hover:bg-black hover:text-white">
               {" "}
               <FontAwesomeIcon icon={faUser} className="me-1" /> Login{" "}
             </button>
-          </Link> 
+          </Link>
+          :
+          <div className="relative inline-block text-left">
+            <button onClick={()=>setDropDownStatus(!dropDownStatus)} className="w-full  px-3 py-2 bg-gray-500 shadow-xs hover:bg-gray-50 rounded">
+                <img width={'30px'} height={'30px'} style={{borderRadius:'50%'}} className="mx-2" src={userDp==""?"http://pluspng.com/img-png/user-png-icon-male-user-icon-512.png":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp:"http://pluspng.com/img-png/user-png-icon-male-user-icon-512.png"} alt="user" />
+            </button>
+            { dropDownStatus && <div className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden">
+              <div className="py-1">
+                <Link className="block px-4 py-2 text-sm text-gray-700" to={'/profile'}> <FontAwesomeIcon icon={faAddressCard} className="me-2" /> Profile </Link>
+                <button onClick={logout} className="block px-4 py-2 text-sm text-gray-700"><FontAwesomeIcon icon={faPowerOff} className="me-2" /> Logout</button>
+              </div>
+            </div>}
+          </div>
+          }
         </div>
         <ul className={listStatus?"flex flex-col":"md:flex justify-center items-center hidden"}>
           <li className="md:mx-4 mt-3 md:mt-0"><Link to={'/'} >HOME</Link></li>
