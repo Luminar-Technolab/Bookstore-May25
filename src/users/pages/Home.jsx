@@ -1,22 +1,40 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Header from "../components/Header";
 import Footer from '../../components/Footer'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { getHomeBooksAPI } from '../../services/allAPI';
 import { useEffect } from 'react';
+import { ToastContainer,toast } from 'react-toastify';
+import { searchBookContext } from '../../contextAPI/ContextShare';
 
 const Home = () => {
   const [homeBooks,setHomeBooks] = useState([])
+  const navigate = useNavigate()
+  const {searchKey,setSearchKey} = useContext(searchBookContext)
 
   useEffect(()=>{
+    setSearchKey("")
     getHomeBooks()
   },[])
 
-  console.log(homeBooks);
-
+  // console.log(homeBooks);
+  const searchBook = ()=>{
+    if(!searchKey){
+      toast.warning("Plesese provide a Book Title here!!!")
+    }else if(!sessionStorage.getItem("token")){
+      toast.warning("please Login to Search books... ")
+      setTimeout(() => {
+        navigate('/login')
+      }, 2500);
+    }else if(sessionStorage.getItem("token") && searchKey){
+      navigate("/all-books")
+    }else{
+      toast.error("Something went wrong!!!")
+    }
+  }
   
   const getHomeBooks = async ()=>{
     try{
@@ -38,8 +56,8 @@ const Home = () => {
           <h1 className='text-5xl  font-bold'>Wonderful Gifts</h1>
           <p>Give your family and friends a book</p>
           <div className="mt-9">
-            <input type="text" placeholder='Search Books' className='bg-white p-2 rounded-3xl placeholder-gray-500 w-100'/>
-            <FontAwesomeIcon icon={faMagnifyingGlass} className='text-gray-500' style={{marginLeft:'-40px'}}/>
+            <input onChange={e=>setSearchKey(e.target.value)} type="text" placeholder='Search Books' className='bg-white p-2 rounded-3xl placeholder-gray-500 w-100 text-black' />
+            <FontAwesomeIcon onClick={searchBook} icon={faMagnifyingGlass} className='text-gray-500' style={{marginLeft:'-40px'}}/>
           </div>
         </div>
       </div>
@@ -92,6 +110,18 @@ const Home = () => {
         </div>
       </section>
     <Footer/>
+     <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+          />
     </>
   )
 }
