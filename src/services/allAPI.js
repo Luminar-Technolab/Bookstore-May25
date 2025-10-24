@@ -36,10 +36,19 @@ export const getAllBooksAPI = async (search,reqHeader)=>{
 export const getSingleBookAPI = async (bookId,reqHeader)=>{
   return await  commonAPI("GET",`${SERVERURL}/books/${bookId}/view`,{},reqHeader)
 }
-
+// ALL USER UPLOAD books called by profile
+export const getAllUserUploadBooksAPI = async (reqHeader)=>{
+  return await  commonAPI("GET",`${SERVERURL}/user-books`,{},reqHeader)
+}
+// all user purchased  book called by profile
+export const getAllUserPurchasedBooksAPI = async (reqHeader)=>{
+  return await  commonAPI("GET",`${SERVERURL}/user-bought-books`,{},reqHeader)
+}
+// remove user upload books called by profile
+export const removeUserUploadBookAPI = async (bookId,reqHeader)=>{
+  return await  commonAPI("DELETE",`${SERVERURL}/user-books/${bookId}/remove`,{},reqHeader)
+}
 // profile update
-// purchased  book
-// approve books
 
 // authorised user api - admin
 

@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleCheck, faL } from '@fortawesome/free-solid-svg-icons'
 import { faSquarePlus } from '@fortawesome/free-regular-svg-icons'
 import { ToastContainer,toast } from 'react-toastify';
-import { addBookAPI } from '../../services/allAPI'
+import { addBookAPI, getAllUserPurchasedBooksAPI, getAllUserUploadBooksAPI, removeUserUploadBookAPI } from '../../services/allAPI'
+import Edit from '../components/Edit'
 
 const Profile = () => {
   const [sellBookStatus,setSellBookStatus] = useState(true)
@@ -18,12 +19,86 @@ const Profile = () => {
   const [preview,setPreview] = useState("")
   const [previewList,setPreviewList] = useState([])
   const [token,setToken] = useState("")
+  const [userBooks,setUserBooks] = useState([])
+  const [deleteBookStatus,setDeleteBookStatus] = useState(false)
+  const [purchaseBooks,setPurchaseBooks] = useState([])
+  const [username,setUsername] = useState("")
+  const [userDP,setUserDP] = useState("")
 
+  // console.log(userBooks);
+  //  console.log(purchaseBooks);
+  // console.log(username);
+  
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
       setToken(sessionStorage.getItem("token"))
+      const user = JSON.parse(sessionStorage.getItem("user"))
+      // console.log(user);
+      setUsername(user.username)
+      setUserDP(user.profile)
     }
   },[])
+
+  useEffect(()=>{
+    if(bookStatus==true){
+      getAllUserBooks()
+    }else if (purchaseStatus==true){
+      getAllUserBoughtBooks()
+    }
+  },[bookStatus,deleteBookStatus,purchaseStatus])
+
+  const getAllUserBoughtBooks = async()=>{
+    const reqHeader = {
+        "Authorization":`Bearer ${token}`
+      }
+      try{
+        const result = await getAllUserPurchasedBooksAPI(reqHeader)
+        if(result.status==200){
+            setPurchaseBooks(result.data)
+        }else{
+          console.log(result);          
+        }
+      }catch(err){
+        console.log(err);        
+      }
+  }
+
+  const removeBook = async (bookId)=>{
+      const reqHeader = {
+        "Authorization":`Bearer ${token}`
+      }
+      try{
+        const result = await removeUserUploadBookAPI(bookId,reqHeader)
+        if(result.status==200){
+          toast.success(result.data)
+          setDeleteBookStatus(true)
+        }else{
+          console.log(result);          
+        }
+      }catch(err){
+        console.log(err);        
+      }
+  }
+
+  const getAllUserBooks = async()=>{
+    console.log("Inside getAllUserBooks");
+    const reqHeader = {
+        "Authorization":`Bearer ${token}`
+      }
+      try{
+        const result = await getAllUserUploadBooksAPI(reqHeader)
+        console.log(result);
+        
+        if(result.status==200){
+          setUserBooks(result.data)
+        }else{
+          console.log(result);
+          
+        }
+      }catch(err){
+        console.log(err);        
+      }
+  }
 
   const handleUploadBookImage = (e)=>{
     // console.log(e.target.files[0]);
@@ -94,14 +169,14 @@ const Profile = () => {
     <Header/>
     <div style={{height:'200px'}} className="bg-black"></div>
     <div style={{width:'230px',height:'230px',borderRadius:'50%',marginLeft:'70px',marginTop:'-130px'}} className="bg-white p-3">
-      <img style={{width:'200px',height:'200px',borderRadius:'50%'}} src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="profile" />
+      <img style={{width:'200px',height:'200px',borderRadius:'50%'}} src={userDP==""?"https://cdn-icons-png.flaticon.com/512/149/149071.png":userDP} alt="profile" />
     </div>
     <div className="md:flex justify-between px-20 mt-5">
       <div className="flex  items-center">
-        <h1 className="font-bold md:text-3xl text-2xl">Username</h1>
+        <h1 className="font-bold md:text-3xl text-2xl">{username}</h1>
         <FontAwesomeIcon className='text-blue-400 ms-3 ' icon={faCircleCheck}/>
       </div>
-      <div>Edit</div>
+      <Edit/>
     </div>
     <p className="md:px-20 px-5 my-5 text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque excepturi ex delectus accusantium nemo, perspiciatis pariatur quo explicabo facilis sed blanditiis, ullam neque labore expedita qui itaque unde, repudiandae esse.
     Dignissimos, officia aut suscipit quo magni soluta commodi iste neque architecto, error, eaque exercitationem incidunt iure molestiae voluptatem quasi inventore culpa ipsam! Repellendus beatae adipisci cupiditate reiciendis non saepe fuga.</p>
@@ -193,26 +268,37 @@ const Profile = () => {
         bookStatus &&
         <div className='p-10 my-20 shadow rounded'>
             {/* duplicate div accordign to book  */}
-            <div className="p-5 rounded mt-4 bg-gray-100">
-              <div className="md:grid grid-cols-[3fr_1fr]">
-                <div className="px-4">
-                  <h1 className="text-2xl">Book Title</h1>
-                  <h2 className="text-xl">Author</h2>
-                  <h3 className="text-lg text-blue-500">$ 300</h3>
-                  <p className="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores quos consequuntur, deleniti dolorum in tempora veritatis perferendis, facilis dolor blanditiis nobis atque sint architecto nam nostrum. Repellat iste atque quam.</p>
-                  <div className="flex mt-3">
-                    <img width={'150px'} height={'150px'} src="https://psdstamps.com/wp-content/uploads/2022/04/round-pending-stamp-png.png" alt="pending icon" />
-                    <img width={'100px'} height={'100px'} src="https://pngimg.com/uploads/approved/approved_PNG1.png" alt="approved icon" />
+            {
+              userBooks?.length>0 ?
+                userBooks?.map((item,index)=>(
+                  <div key={index} className="p-5 rounded mt-4 bg-gray-100">
+                    <div className="md:grid grid-cols-[3fr_1fr]">
+                      <div className="px-4">
+                        <h1 className="text-2xl">{item?.title}</h1>
+                        <h2 className="text-xl">{item?.author}</h2>
+                        <h3 className="text-lg text-blue-500">$ {item?.discountPrice}</h3>
+                        <p className="text-justify">{item?.abstract}</p>
+                        <div className="flex mt-3">
+                          {item?.status=="pending" ? <img width={'130px'} height={'100px'} src="https://psdstamps.com/wp-content/uploads/2022/04/round-pending-stamp-png.png" alt="pending icon" /> : item?.status=="approved"?
+                          <img width={'80px'} height={'80px'} src="https://pngimg.com/uploads/approved/approved_PNG1.png" alt="approved icon" /> :
+                          <img width={'120px'} height={'120px'} src="https://psdstamps.com/wp-content/uploads/2020/02/round-rejected-stamp-png.png" alt="reject icon" />}
+                        </div>
+                      </div>
+                      <div className="px-4 mt-4 md:mt-0">
+                        <img className="w-full" src={item?.imageUrl} alt="book" />
+                        <div className="mt-4 flex justify-end">
+                          <button onClick={()=>removeBook(item?._id)} className="py-2 px-3 rounded bg-red-600 text-white ms-3 hover:bg-white hover:border hover:text-red-600 hover:border-red-600">Delete</button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="px-4 mt-4 md:mt-0">
-                  <img className="w-full" src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book" />
-                  <div className="mt-4 flex justify-end">
-                    <button className="py-2 px-3 rounded bg-red-600 text-white ms-3 hover:bg-white hover:border hover:text-red-600 hover:border-red-600">Delete</button>
-                  </div>
-                </div>
+                ))
+              :
+              <div className='flex justify-center items-center flex-col'>
+                <img width={'45%'} height={'200px'} src="https://usagif.com/wp-content/uploads/gifs/book-56.gif" alt="book" />
+                <p className='font-bold text-xl'>Books not uploaded yet!!!</p>
               </div>
-            </div>
+            }
         </div>
       }
       {/* purchase history*/}
@@ -220,23 +306,32 @@ const Profile = () => {
         purchaseStatus &&
         <div className='p-10 my-20 shadow rounded'>
             {/* duplicate div accordign to book  */}
-            <div className="p-5 rounded mt-4 bg-gray-100">
-              <div className="md:grid grid-cols-[3fr_1fr]">
-                <div className="px-4">
-                  <h1 className="text-2xl">Book Title</h1>
-                  <h2 className="text-xl">Author</h2>
-                  <h3 className="text-lg text-blue-500">$ 300</h3>
-                  <p className="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores quos consequuntur, deleniti dolorum in tempora veritatis perferendis, facilis dolor blanditiis nobis atque sint architecto nam nostrum. Repellat iste atque quam.</p>
-                  <div className=" mt-3">
-                    <img width={'150px'} height={'150px'} src="https://www.psdstamps.com/wp-content/uploads/2022/04/round-sold-stamp-png.png" alt="sold icon" />
+            {
+              purchaseBooks?.length>0 ?
+                purchaseBooks?.map((item,index)=>(
+                  <div key={index} className="p-5 rounded mt-4 bg-gray-100">
+                    <div className="md:grid grid-cols-[3fr_1fr]">
+                      <div className="px-4">
+                        <h1 className="text-2xl">{item?.title}</h1>
+                        <h2 className="text-xl">{item?.author}</h2>
+                        <h3 className="text-lg text-blue-500">$ {item?.discountPrice}</h3>
+                        <p className="text-justify">{item?.abstract}</p>
+                        <div className=" mt-3">
+                          <img width={'150px'} height={'150px'} src="https://www.psdstamps.com/wp-content/uploads/2022/04/round-sold-stamp-png.png" alt="sold icon" />
+                        </div>
+                      </div>
+                      <div className="px-4 mt-4 md:mt-0">
+                        <img className="w-full" src={item?.imageUrl} alt="book" />
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="px-4 mt-4 md:mt-0">
-                  <img className="w-full" src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book" />
-                  
-                </div>
+                ))
+              :
+              <div className='flex justify-center items-center flex-col'>
+                <img width={'45%'} height={'200px'} src="https://usagif.com/wp-content/uploads/gifs/book-56.gif" alt="book" />
+                <p className='font-bold text-xl'>Books are not purchased yet!!!</p>
               </div>
-            </div>
+            }
         </div>
       }
     </div>
