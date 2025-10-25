@@ -4,7 +4,7 @@ import { faEye, faEyeSlash, faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer,toast } from 'react-toastify';
 import {googleLoginAPI, loginAPI, registerAPI} from '../services/allAPI'
-import { GoogleLogin,GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 
 const Auth = ({register}) => {

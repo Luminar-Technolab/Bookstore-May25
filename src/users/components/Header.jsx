@@ -8,6 +8,7 @@ import { faBars, faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import SERVERURL from '../../services/serverURL' 
 
 const Header = () => {
   const [listStatus,setListStatus] = useState(false)
@@ -16,6 +17,8 @@ const Header = () => {
   const [dropDownStatus,setDropDownStatus] = useState(false)
   const navigate = useNavigate()
    
+  console.log(userDp);
+  
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
       const token = sessionStorage.getItem("token")
@@ -65,7 +68,7 @@ const Header = () => {
           :
           <div className="relative inline-block text-left">
             <button onClick={()=>setDropDownStatus(!dropDownStatus)} className="w-full bg-white px-3 py-2  shadow-xs hover:bg-gray-50">
-                <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}} className="mx-2" src={userDp==""?"http://pluspng.com/img-png/user-png-icon-male-user-icon-512.png":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp:"http://pluspng.com/img-png/user-png-icon-male-user-icon-512.png"} alt="user" />
+                <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}} className="mx-2" src={userDp==""?"http://pluspng.com/img-png/user-png-icon-male-user-icon-512.png":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp:`${SERVERURL}/uploads/${userDp}`} alt="user" />
             </button>
             { dropDownStatus && <div className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden">
               <div className="py-1">
@@ -91,7 +94,7 @@ const Header = () => {
           :
           <div className="relative inline-block text-left">
             <button onClick={()=>setDropDownStatus(!dropDownStatus)} className="w-full  px-3 py-2 bg-gray-500 shadow-xs hover:bg-gray-50 rounded">
-                <img width={'30px'} height={'30px'} style={{borderRadius:'50%'}} className="mx-2" src={userDp==""?"http://pluspng.com/img-png/user-png-icon-male-user-icon-512.png":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp:"http://pluspng.com/img-png/user-png-icon-male-user-icon-512.png"} alt="user" />
+               <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}} className="mx-2" src={userDp==""?"http://pluspng.com/img-png/user-png-icon-male-user-icon-512.png":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp:`${SERVERURL}/uploads/${userDp}`} alt="user" />
             </button>
             { dropDownStatus && <div className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden">
               <div className="py-1">

@@ -7,6 +7,7 @@ import { faSquarePlus } from '@fortawesome/free-regular-svg-icons'
 import { ToastContainer,toast } from 'react-toastify';
 import { addBookAPI, getAllUserPurchasedBooksAPI, getAllUserUploadBooksAPI, removeUserUploadBookAPI } from '../../services/allAPI'
 import Edit from '../components/Edit'
+import SERVERURL from '../../services/serverURL'
 
 const Profile = () => {
   const [sellBookStatus,setSellBookStatus] = useState(true)
@@ -169,7 +170,7 @@ const Profile = () => {
     <Header/>
     <div style={{height:'200px'}} className="bg-black"></div>
     <div style={{width:'230px',height:'230px',borderRadius:'50%',marginLeft:'70px',marginTop:'-130px'}} className="bg-white p-3">
-      <img style={{width:'200px',height:'200px',borderRadius:'50%'}} src={userDP==""?"https://cdn-icons-png.flaticon.com/512/149/149071.png":userDP} alt="profile" />
+      <img style={{width:'200px',height:'200px',borderRadius:'50%'}} src={userDP==""?"https://cdn-icons-png.flaticon.com/512/149/149071.png":userDP.startsWith("https://lh3.googleusercontent.com/")?userDP:`${SERVERURL}/uploads/${userDP}`} alt="profile" />
     </div>
     <div className="md:flex justify-between px-20 mt-5">
       <div className="flex  items-center">
