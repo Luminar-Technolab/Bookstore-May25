@@ -2,11 +2,64 @@ import React, { useState } from 'react'
 import AdminHeader from '../components/AdminHeader'
 import Footer from '../../components/Footer'
 import AdminSideBar from "../components/AdminSideBar"
+import { getAllUsersAPI, listAllBooksAPI } from '../../services/allAPI'
+import { useEffect } from 'react'
+import SERVERURL from '../../services/serverURL'
 
 const ResourceAdmin = () => {
   const [bookListStatus,setBookListStatus] = useState(true)
   const [usersListStatus,setUsersListStatus] = useState(false)
+  const [allUsers,setAllUsers] = useState([])
+  const [userBooks,setUserBooks] = useState([])
+  // const [token,setToken] = useState("")
 
+  console.log(userBooks);
+    
+  useEffect(()=>{
+    if(sessionStorage.getItem("token")){
+      const token = sessionStorage.getItem("token")
+      // setToken(token)
+      if(bookListStatus==true){
+        getAllBooks(token)
+      }else if(usersListStatus==true){
+        getAllUsers(token)
+      }else{
+        console.log("Something went wrong!!!");
+        
+      }
+    }
+  },[usersListStatus])
+
+  const getAllBooks = async (userToken)=>{
+    const reqHeader = {
+      "Authorization":`Bearer ${userToken}`
+    }
+    try{
+      const result = await listAllBooksAPI(reqHeader)
+      if(result.status==200){
+        setUserBooks(result.data)
+      }else{
+        console.log(result);        
+      }
+    }catch(err){
+      console.log(err);      
+    }
+  }
+  const getAllUsers = async (userToken)=>{
+    const reqHeader = {
+      "Authorization":`Bearer ${userToken}`
+    }
+    try{
+      const result = await getAllUsersAPI(reqHeader)
+      if(result.status==200){
+        setAllUsers(result.data)
+      }else{
+        console.log(result);        
+      }
+    }catch(err){
+      console.log(err);      
+    }
+  }
   return (
     <>
     <AdminHeader/>
@@ -63,36 +116,23 @@ const ResourceAdmin = () => {
           usersListStatus &&
           <div className="md:grid grid-cols-3 w-full my-5">
             {/* duplicate card */}
-              <div className="shadow  rounded p-3 m-4 bg-gray-200">
-                <p className="text-red-700 font-bold text-lg">ID :  5326349750346</p>
-                  <div className='flex  items-center mt-3'>
-                    <img width={'100px'} height={'100px'} style={{borderRadius:'50%'}} src="https://img.freepik.com/premium-vector/man-character_665280-46970.jpg" alt="user" />
-                    <div className="flex flex-col  text-lg ml-6 ">
-                      <p className='text-blue-800'>Username</p>
-                      <p>email</p>
+            {
+              allUsers?.length>0 ?
+                allUsers?.map((user,index)=>(
+                  <div key={index} className="shadow  rounded p-2 m-2 bg-gray-200">
+                  <p className="text-red-700 font-bold text-md">ID:{user?._id}</p>
+                    <div className='flex  items-center mt-3'>
+                          <img width={'100px'} height={'100px'} style={{borderRadius:'50%'}} src={user?.profile?`${SERVERURL}/uploads/${user?.profile}`:"https://img.freepik.com/premium-vector/man-character_665280-46970.jpg"} alt="user" />
+                          <div className="flex flex-col  ml-3 w-full">
+                            <p className='text-blue-800 text-lg font-bold'>{user?.username}</p>
+                            <p>{user?.email}</p>
+                        </div>
+                        </div>
                   </div>
-                  </div>
-              </div>
-              <div className="shadow  rounded p-3 m-4 bg-gray-200">
-                <p className="text-red-700 font-bold text-lg">ID :  5326349750346</p>
-                  <div className='flex  items-center mt-3'>
-                    <img width={'100px'} height={'100px'} style={{borderRadius:'50%'}} src="https://img.freepik.com/premium-vector/man-character_665280-46970.jpg" alt="user" />
-                    <div className="flex flex-col  text-lg ml-6 ">
-                      <p className='text-blue-800'>Username</p>
-                      <p>email</p>
-                  </div>
-                  </div>
-              </div>
-              <div className="shadow  rounded p-3 m-4 bg-gray-200">
-                <p className="text-red-700 font-bold text-lg">ID :  5326349750346</p>
-                  <div className='flex  items-center mt-3'>
-                    <img width={'100px'} height={'100px'} style={{borderRadius:'50%'}} src="https://img.freepik.com/premium-vector/man-character_665280-46970.jpg" alt="user" />
-                    <div className="flex flex-col  text-lg ml-6 ">
-                      <p className='text-blue-800'>Username</p>
-                      <p>email</p>
-                  </div>
-                  </div>
-              </div>
+                ))
+              :
+              <div>No Users</div>
+             }
           </div>
         }
       </div>

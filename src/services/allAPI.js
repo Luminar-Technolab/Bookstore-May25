@@ -52,11 +52,17 @@ export const removeUserUploadBookAPI = async (bookId,reqHeader)=>{
 export const updateUserProfileAPI = async (reqBody,reqHeader)=>{
   return await  commonAPI("PUT",`${SERVERURL}/user-profile/edit`,reqBody,reqHeader)
 }
-// authorised user api - admin
+// authorised user api - admin----------------------------------------------------
 
 // add career 
 // update admin
 // list books
-// list users
+export const listAllBooksAPI = async (reqHeader)=>{
+  return await  commonAPI("GET",`${SERVERURL}/admin-all-books`,{},reqHeader)
+}
+// list users - called by admin collection compoennt 
+export const getAllUsersAPI = async (reqHeader)=>{
+  return await  commonAPI("GET",`${SERVERURL}/all-user`,{},reqHeader)
+}
 // apporve books
 
