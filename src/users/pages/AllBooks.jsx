@@ -110,7 +110,7 @@ const AllBooks = () => {
                 {
                   books.length>0?
                     books?.map(book=>(
-                      <div key={book?._id} className="shadow  rounded p-3 mx-4 my-3">
+                      <div key={book?._id} className="shadow  rounded p-3 mx-4 my-3" hidden={book?.status=='pending' || book?.status=='sold'}>
                         <img
                           width={"100%"}
                           height={"300px"}

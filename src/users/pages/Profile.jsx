@@ -284,7 +284,7 @@ const Profile = () => {
                         <div className="flex mt-3">
                           {item?.status=="pending" ? <img width={'130px'} height={'100px'} src="https://psdstamps.com/wp-content/uploads/2022/04/round-pending-stamp-png.png" alt="pending icon" /> : item?.status=="approved"?
                           <img width={'80px'} height={'80px'} src="https://pngimg.com/uploads/approved/approved_PNG1.png" alt="approved icon" /> :
-                          <img width={'120px'} height={'120px'} src="https://psdstamps.com/wp-content/uploads/2020/02/round-rejected-stamp-png.png" alt="reject icon" />}
+                          <img width={'120px'} height={'120px'} src="https://cdn-icons-png.flaticon.com/512/6188/6188726.png" alt="sold icon" />}
                         </div>
                       </div>
                       <div className="px-4 mt-4 md:mt-0">

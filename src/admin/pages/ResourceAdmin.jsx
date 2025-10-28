@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import AdminHeader from '../components/AdminHeader'
 import Footer from '../../components/Footer'
 import AdminSideBar from "../components/AdminSideBar"
-import { getAllUsersAPI, listAllBooksAPI } from '../../services/allAPI'
+import { getAllUsersAPI, listAllBooksAPI, updateBookStatusAPI } from '../../services/allAPI'
 import { useEffect } from 'react'
 import SERVERURL from '../../services/serverURL'
 
@@ -11,9 +11,10 @@ const ResourceAdmin = () => {
   const [usersListStatus,setUsersListStatus] = useState(false)
   const [allUsers,setAllUsers] = useState([])
   const [userBooks,setUserBooks] = useState([])
+  const [updateBookStatus,setUpdateBookStatus] = useState({})
   // const [token,setToken] = useState("")
 
-  console.log(userBooks);
+  console.log(updateBookStatus);
     
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
@@ -25,10 +26,9 @@ const ResourceAdmin = () => {
         getAllUsers(token)
       }else{
         console.log("Something went wrong!!!");
-        
       }
     }
-  },[usersListStatus])
+  },[usersListStatus,updateBookStatus])
 
   const getAllBooks = async (userToken)=>{
     const reqHeader = {
@@ -36,6 +36,8 @@ const ResourceAdmin = () => {
     }
     try{
       const result = await listAllBooksAPI(reqHeader)
+      console.log(result);
+      
       if(result.status==200){
         setUserBooks(result.data)
       }else{
@@ -60,6 +62,24 @@ const ResourceAdmin = () => {
       console.log(err);      
     }
   }
+
+  const apporveBook = async (book)=>{
+    const userToken = sessionStorage.getItem("token")
+     const reqHeader = {
+      "Authorization":`Bearer ${userToken}`
+    }
+    try{
+      const result = await updateBookStatusAPI(book,reqHeader)
+      console.log(result);
+      
+      if(result.status==200){
+        setUpdateBookStatus(result.data)
+      }
+    }catch(err){
+      console.log(err);      
+    }
+  }
+
   return (
     <>
     <AdminHeader/>
@@ -78,38 +98,33 @@ const ResourceAdmin = () => {
         {
           bookListStatus &&
           <div className="md:grid grid-cols-4 w-full my-5">
-              <div className="shadow  rounded p-3 m-4">
-                  <img width={'100%'} height={'300px'} src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book" />
-                  <div className="flex flex-col justify-center items-center mt-4">
-                    <p className="text-blue-700 font-bold text-lg">Author</p>
-                    <p >Book Title</p>
-                    <p>$ 400</p>
+          {/* duplicate card */}
+              {  
+                userBooks?.length>0?
+                userBooks?.map(book=>(
+                  <div key={book?._id} className="shadow  rounded p-3 m-4">
+                    <img width={'100%'} height={'300px'} src={book?.imageUrl} alt="book" />
+                    <div className="flex flex-col justify-center items-center mt-4">
+                      <p className="text-blue-700 font-bold text-lg">{book?.author}</p>
+                      <p >{book?.title}</p>
+                      <p>$ {book?.discountPrice}</p>
+                      {
+                        book?.status=="pending" &&
+                        <button onClick={()=>apporveBook(book)} className="p-3 rounded border bg-green-700 w-full text-white hover:border-green-600 hover:bg-white hover:text-green-700">Approve</button>                      
+                      }
+                      {
+                        book?.status=="approved" &&
+                        <div className="flex justify-end w-full">
+                          <img width={'40px'} height={'40px'} src="https://static.vecteezy.com/system/resources/previews/017/177/791/original/round-check-mark-symbol-with-transparent-background-free-png.png" alt="tick mark" />
+                        </div>
+                      }
+                    </div>
                   </div>
-              </div>
-              <div className="shadow p-3 m-4 rounded">
-                <img width={'100%'} height={'300px'} src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book" />
-                <div className="flex flex-col justify-center items-center mt-4">
-                  <p className="text-blue-700 font-bold text-lg">Author</p>
-                  <p >Book Title</p>
-                  <p>$ 400</p>
-                </div>
-              </div>
-              <div className="shadow p-3 m-4 rounded">
-                <img width={'100%'} height={'300px'} src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book" />
-                <div className="flex flex-col justify-center items-center mt-4">
-                  <p className="text-blue-700 font-bold text-lg">Author</p>
-                  <p >Book Title</p>
-                  <p>$ 400</p>
-                </div>
-              </div>
-              <div className="shadow p-3 m-4 rounded">
-                <img width={'100%'} height={'300px'} src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book" />
-                <div className="flex flex-col justify-center items-center mt-4">
-                  <p className="text-blue-700 font-bold text-lg">Author</p>
-                  <p >Book Title</p>
-                  <p>$ 400</p>
-                </div>
-              </div>
+                ))
+              :
+              <div>No Books Added yet...</div>
+              }
+             
           </div>
         }
         {
