@@ -55,7 +55,10 @@ export const updateUserProfileAPI = async (reqBody,reqHeader)=>{
 // authorised user api - admin----------------------------------------------------
 
 // add career 
-// update admin
+// update admin - called from admin setting component when update btn clicked
+export const updateAdminProfileAPI = async (reqBody,reqHeader)=>{
+  return await  commonAPI("PUT",`${SERVERURL}/admin-profile/edit`,reqBody,reqHeader)
+}
 // list books
 export const listAllBooksAPI = async (reqHeader)=>{
   return await  commonAPI("GET",`${SERVERURL}/admin-all-books`,{},reqHeader)

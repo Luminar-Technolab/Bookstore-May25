@@ -5,6 +5,7 @@ import AdminSideBar from "../components/AdminSideBar"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationDot, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
+import AddJob from '../components/AddJob'
 
 const CareerAdmin = () => {
   const [jobListStatus,setJobListStatus] = useState(true)
@@ -36,7 +37,7 @@ const CareerAdmin = () => {
                 />
                 <button className="bg-blue-900 text-white p-2">Search</button>
               </div>
-              <div>Add</div>
+              <AddJob/>
             </div>
             {/* duplicate job opening */}
             <div className="border border-gray-200 p-5 shadow my-5">
