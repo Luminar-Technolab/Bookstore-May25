@@ -6,10 +6,56 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationDot, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import AddJob from '../components/AddJob'
+import { getAllJobAPI, removeJobAPI } from '../../services/allAPI'
+import { useEffect } from 'react'
 
 const CareerAdmin = () => {
   const [jobListStatus,setJobListStatus] = useState(true)
   const [lisApplicationSatus,setListApplicationStatus] = useState(false)
+  const [allJobs,setAllJobs] = useState([])
+  const [searchKey,setSearchKey] = useState("")
+  const [deleteJobResponse,setDeleteJobResponse] =useState({})
+
+  console.log(allJobs);
+
+  useEffect(()=>{
+    if(jobListStatus==true){
+      getAllJobs()
+    }
+  },[searchKey,deleteJobResponse])
+  
+  const getAllJobs = async ()=>{
+    try{
+      const result = await getAllJobAPI(searchKey)
+      if(result.status==200){
+        setAllJobs(result.data)
+      }
+    }catch(err){
+      console.log(err);      
+    }
+  }
+
+  const removeJob = async (id)=>{
+    const token = sessionStorage.getItem("token")
+  
+    if(token){
+      const reqHeader = {
+        "Authorization":`Bearer ${token}`
+      }
+      try{
+        const result = await removeJobAPI(id,reqHeader)
+        if(result.status==200){
+          setDeleteJobResponse(result.data)
+        }else{
+          console.log(result);
+        }
+      }catch(err){
+        console.log(err);
+        
+      }
+    }
+  }
+
   return (
     <>
     <AdminHeader/>
@@ -30,7 +76,7 @@ const CareerAdmin = () => {
           <>
             <div className="flex justify-between items-center my-10">
               <div>
-                <input
+                <input onChange={e=>setSearchKey(e.target.value)}
                   type="text"
                   className="p-2  border border-gray-200 text-black w-75 placeholder-gray-400"
                   placeholder="Search By Job Title"
@@ -40,22 +86,28 @@ const CareerAdmin = () => {
               <AddJob/>
             </div>
             {/* duplicate job opening */}
-            <div className="border border-gray-200 p-5 shadow my-5">
-              <div className="flex mb-5 ">
-                <div className='w-full'>
-                  <h1 className="text-xl font-bold">Hr Assistant</h1>
-                  <hr />
-                </div>
-                <button  className="bg-red-900 text-white p-3 ms-5 flex items-center">Delete <FontAwesomeIcon icon={faTrash} className='ms-2'/></button>
-              </div>
-              <p className='text-lg text-blue-700 my-2'><FontAwesomeIcon icon={faLocationDot} />   Kochi</p>
-              <p className='text-lg my-2'>Job Type : full-time</p>
-              <p className='text-lg my-2'>Salary :20000-30000/month</p>
-              <p className='text-lg my-2'>Qualification : MBA</p>
-              <p className='text-lg my-2'>Experience :1-2yr</p>
-              <p className='text-lg my-2'>Description : Lorem ipsum dolor sit amet consectetur adipisicing elit. In dolor voluptate deleniti ut nobis quia, aliquam molestias error! Quia incidunt magnam voluptatem aliquam et adipisci excepturi est reprehenderit, dolorum assumenda?
-              Illo tempore, dolorum maxime consequatur quam temporibus expedita debitis voluptas, cumque nulla modi saepe earum? Nemo dolorem fuga, cum ea blanditiis nisi, soluta hic impedit quidem beatae eos laborum ratione.</p>
-            </div>
+            {
+              allJobs?.length>0 ?
+                allJobs?.map(job=>(
+                  <div key={job?._id} className="border border-gray-200 p-5 shadow my-5">
+                    <div className="flex mb-5 ">
+                      <div className='w-full'>
+                        <h1 className="text-xl font-bold">{job?.title}</h1>
+                        <hr />
+                      </div>
+                      <button onClick={()=>removeJob(job?._id)} className="bg-red-900 text-white p-3 ms-5 flex items-center">Delete <FontAwesomeIcon icon={faTrash} className='ms-2'/></button>
+                    </div>
+                    <p className='text-lg text-blue-700 my-2'><FontAwesomeIcon icon={faLocationDot} /> {job?.location}</p>
+                    <p className='text-lg my-2'>Job Type : {job?.jobType}</p>
+                    <p className='text-lg my-2'>Salary : {job?.salary}</p>
+                    <p className='text-lg my-2'>Qualification : {job?.qualification}</p>
+                    <p className='text-lg my-2'>Experience : {job?.experience}</p>
+                    <p className='text-lg my-2'>Description : {job?.description}</p>
+                  </div>
+                ))
+              :
+              <p>No Job Openings....</p>
+            }
           </>
         }
         {

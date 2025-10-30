@@ -20,8 +20,10 @@ export const googleLoginAPI = async (reqBody)=>{
 export const getHomeBooksAPI = async ()=>{
   return await  commonAPI("GET",`${SERVERURL}/home-books`)
 }
-// all career api
-
+// all job api
+export const getAllJobAPI = async (searchKey)=>{
+  return await  commonAPI("GET",`${SERVERURL}/all-jobs?search=${searchKey}`)
+}
 // --------- authorised user api - user -----------------------------------------------//
 
 // upload/add book - called by profile component
@@ -54,7 +56,14 @@ export const updateUserProfileAPI = async (reqBody,reqHeader)=>{
 }
 // authorised user api - admin----------------------------------------------------
 
-// add career 
+// add job 
+export const addJobAPI = async (reqBody,reqHeader)=>{
+  return await  commonAPI("POST",`${SERVERURL}/add-job`,reqBody,reqHeader)
+}
+// delete job 
+export const removeJobAPI = async (jobId,reqHeader)=>{
+  return await  commonAPI("DELETE",`${SERVERURL}/job/${jobId}/remove`,{},reqHeader)
+}
 // update admin - called from admin setting component when update btn clicked
 export const updateAdminProfileAPI = async (reqBody,reqHeader)=>{
   return await  commonAPI("PUT",`${SERVERURL}/admin-profile/edit`,reqBody,reqHeader)
