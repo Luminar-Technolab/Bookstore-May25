@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import AdminHeader from '../components/AdminHeader'
 import Footer from '../../components/Footer'
 import AdminSideBar from "../components/AdminSideBar"
@@ -8,21 +8,23 @@ import { Link } from 'react-router-dom'
 import AddJob from '../components/AddJob'
 import { getAllJobAPI, removeJobAPI } from '../../services/allAPI'
 import { useEffect } from 'react'
+import { jobContext } from '../../contextAPI/ContextShare'
 
 const CareerAdmin = () => {
+  const {addJobResponse,setAddJobResponse} = useContext(jobContext)
   const [jobListStatus,setJobListStatus] = useState(true)
   const [lisApplicationSatus,setListApplicationStatus] = useState(false)
   const [allJobs,setAllJobs] = useState([])
   const [searchKey,setSearchKey] = useState("")
   const [deleteJobResponse,setDeleteJobResponse] =useState({})
 
-  console.log(allJobs);
+  // console.log(allJobs);
 
   useEffect(()=>{
     if(jobListStatus==true){
       getAllJobs()
     }
-  },[searchKey,deleteJobResponse])
+  },[searchKey,deleteJobResponse,addJobResponse])
   
   const getAllJobs = async ()=>{
     try{

@@ -1,11 +1,32 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUpRightFromSquare, faLocationDot,faXmark } from '@fortawesome/free-solid-svg-icons'
+import { getAllJobAPI } from '../../services/allAPI'
 
 const Careers = () => {
   const [modalStatus,setModalStatus] = useState(false)
+  const [allJobs,setAllJobs] = useState([])
+  const [searchKey,setSearchKey] = useState("")
+
+  useEffect(()=>{
+    getAlljobs()
+  },[searchKey])
+
+  const getAlljobs = async()=>{
+    try{
+      const result = await getAllJobAPI(searchKey)
+      if(result.status==200){
+        setAllJobs(result.data)
+      }else{
+        console.log(result);        
+      }
+    }catch(err){
+      console.log(err);      
+    }
+  }
+
   return (
     <>
     <Header/>
@@ -19,28 +40,35 @@ const Careers = () => {
         <h1 className="text-2xl font-bold">Current openings</h1>
         <div className="flex my-10 justify-center items-center">
           <input
-              type="text"
+              type="text" onChange={e=>setSearchKey(e.target.value)}
               className="p-2  border border-gray-200 text-black w-100 placeholder-gray-400"
               placeholder="Job Title"
             />
             <button className="bg-green-900 text-white p-2">Search</button>
         </div>
         {/* duplicate job opening */}
-        <div className="border border-gray-200 p-5 shadow my-5">
-          <div className="flex mb-5 ">
-            <div className='w-full'>
-              <h1 className="text-xl">Hr Assistant</h1>
-              <hr />
-            </div>
-            <button onClick={()=>setModalStatus(true)} className="bg-blue-900 text-white p-3 ms-5 flex items-center">Apply <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='ms-2'/></button>
-          </div>
-          <p className='text-lg my-2'><FontAwesomeIcon icon={faLocationDot} />   Kochi</p>
-          <p className='text-lg my-2'>Job Type : full-time</p>
-          <p className='text-lg my-2'>Salary :20000-30000/month</p>
-          <p className='text-lg my-2'>Qualification :</p>
-          <p className='text-lg my-2'>Experience :1-2yr</p>
-          <p className='text-lg my-2'>Description :</p>
-        </div>
+        {
+          allJobs?.length>0?
+            allJobs?.map(job=>(
+              <div key={job?._id} className="border border-gray-200 p-5 shadow my-5">
+                <div className="flex mb-5 ">
+                  <div className='w-full'>
+                    <h1 className="text-xl">{job?.title}</h1>
+                    <hr />
+                  </div>
+                  <button onClick={()=>setModalStatus(true)} className="bg-blue-900 text-white p-3 ms-5 flex items-center">Apply <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='ms-2'/></button>
+                </div>
+                <p className='text-lg my-2'><FontAwesomeIcon icon={faLocationDot} />   {job?.location}</p>
+                <p className='text-lg my-2'>Job Type : {job?.jobType}</p>
+                    <p className='text-lg my-2'>Salary : {job?.salary}</p>
+                    <p className='text-lg my-2'>Qualification : {job?.qualification}</p>
+                    <p className='text-lg my-2'>Experience : {job?.experience}</p>
+                    <p className='text-lg my-2 text-justify'>Description : {job?.description}</p>
+              </div>
+            ))
+          :
+          <p>No current Job Openings....</p>
+        }
       </div>
     </div>
     {/* modal */}
