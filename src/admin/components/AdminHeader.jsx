@@ -1,8 +1,19 @@
 import { faPowerOff } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
+import React, { useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { userAuthContext } from '../../contextAPI/AuthContex'
 
 const AdminHeader = () => {
+  const {role,authorisedUser,setAuthorisedUser} = useContext(userAuthContext)
+  const navigate = useNavigate()
+
+  const logout=()=>{
+    sessionStorage.clear()
+    setAuthorisedUser(false)
+    navigate('/')
+  }
+
   return (
      <>
       <div className="flex justify-between items-center p-3 md:px-20">
@@ -18,7 +29,7 @@ const AdminHeader = () => {
         </div>
        
         {/* logout block*/}
-       <button className="border border-black  rounded px-3 py-2 ms-3 hover:bg-black hover:text-white">
+       <button onClick={logout} className="border border-black  rounded px-3 py-2 ms-3 hover:bg-black hover:text-white">
               {" "}
               <FontAwesomeIcon icon={faPowerOff} className="me-1" /> Logout{" "}
         </button>
