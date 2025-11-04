@@ -9,6 +9,7 @@ import { getSingleBookAPI } from '../../services/allAPI'
 import { ToastContainer,toast } from 'react-toastify';
 import { useEffect } from 'react'
 import SERVERURL from '../../services/serverURL'
+import {loadStripe} from '@stripe/stripe-js';
 
 const ViewBook = () => {
   const [modalStatus,setModalStatus] = useState(false)
@@ -42,6 +43,13 @@ const ViewBook = () => {
     }
   }
 
+  const handlePayment = async ()=>{
+    console.log("Inisde handlePayment");
+    //stripe object
+    const stripe = await loadStripe('pk_test_51SPbfBKFigsKe3E6eHRXBzBWyr4yBXnbKH97Utyc6zral2kSeAcFwjNW0zO0W0v9YZMf9fMHkwO3RjkxsL1ZCrrJ00UU82SkLM');
+    // console.log(stripe);
+    // reqbody - book , reqHeader- token
+  }
 
   return (
     <>
@@ -72,7 +80,7 @@ const ViewBook = () => {
               </div>
               <div className="flex justify-end">
                 <Link to={'/all-books'} className="bg-blue-900 text-white p-2 rounded"><FontAwesomeIcon icon={faBackward} className='me-3'/>Back</Link>
-                <button className="bg-green-900 text-white p-2 ms-5 rounded">Buy $ {book?.discountPrice}</button>
+                <button onClick={handlePayment} className="bg-green-900 text-white p-2 ms-5 rounded">Buy $ {book?.discountPrice}</button>
 
               </div>
           </div>

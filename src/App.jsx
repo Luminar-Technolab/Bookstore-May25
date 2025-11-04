@@ -15,6 +15,8 @@ import CareerAdmin from "./admin/pages/CareerAdmin";
 import ResourceAdmin from "./admin/pages/ResourceAdmin";
 import SettingAdmin from "./admin/pages/SettingAdmin";
 import { userAuthContext } from './contextAPI/AuthContex'
+import PaymentSucess from './users/pages/PaymentSucess'
+import PaymentError from './users/pages/PaymentError'
 
 function App() {
 
@@ -41,6 +43,8 @@ function App() {
           <>
             <Route path='/books/:id/view' element={<ViewBook/>}/>
             <Route path='/profile' element={<Profile/>}/>
+            <Route path='/payement-success' element={<PaymentSucess/>}/>
+            <Route path='/payement-error' element={<PaymentError/>}/>
           </>
         }
         
