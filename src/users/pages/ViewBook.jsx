@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye,faBackward, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { Link, useParams } from 'react-router-dom'
 import { faCamera } from '@fortawesome/free-regular-svg-icons'
-import { getSingleBookAPI } from '../../services/allAPI'
+import { getSingleBookAPI, makePaymentAPI } from '../../services/allAPI'
 import { ToastContainer,toast } from 'react-toastify';
 import { useEffect } from 'react'
 import SERVERURL from '../../services/serverURL'
@@ -49,6 +49,23 @@ const ViewBook = () => {
     const stripe = await loadStripe('pk_test_51SPbfBKFigsKe3E6eHRXBzBWyr4yBXnbKH97Utyc6zral2kSeAcFwjNW0zO0W0v9YZMf9fMHkwO3RjkxsL1ZCrrJ00UU82SkLM');
     // console.log(stripe);
     // reqbody - book , reqHeader- token
+    const token = sessionStorage.getItem("token")
+    if(token){
+      const reqHeader = {
+        "Authorization":`Bearer ${token}`
+      }
+      try{
+        const result = await makePaymentAPI(book,reqHeader)
+        console.log(result);
+        const checkoutSessionURL = result.data.checkoutSessionURL
+        if(checkoutSessionURL){
+          //redirect
+          window.location.href = checkoutSessionURL
+        }
+      }catch(error){
+        console.log(error);        
+      }
+    }
   }
 
   return (

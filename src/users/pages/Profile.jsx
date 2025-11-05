@@ -320,7 +320,7 @@ const Profile = () => {
                         <h3 className="text-lg text-blue-500">$ {item?.discountPrice}</h3>
                         <p className="text-justify">{item?.abstract}</p>
                         <div className=" mt-3">
-                          <img width={'150px'} height={'150px'} src="https://www.psdstamps.com/wp-content/uploads/2022/04/round-sold-stamp-png.png" alt="sold icon" />
+                          <img width={'150px'} height={'150px'} src="https://static.vecteezy.com/system/resources/previews/023/629/698/non_2x/web-button-icon-purchase-button-free-png.png" alt="purchase icon" />
                         </div>
                       </div>
                       <div className="px-4 mt-4 md:mt-0">

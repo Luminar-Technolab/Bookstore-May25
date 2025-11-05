@@ -58,6 +58,10 @@ export const updateUserProfileAPI = async (reqBody,reqHeader)=>{
 export const addApplicationAPI = async (reqBody,reqHeader)=>{
   return await  commonAPI("POST",`${SERVERURL}/application/add`,reqBody,reqHeader)
 }
+//make-payment - called viewBook when buy btn clicked
+export const makePaymentAPI = async (reqBody,reqHeader)=>{
+  return await  commonAPI("POST",`${SERVERURL}/make-payment`,reqBody,reqHeader)
+}
 
 
 // authorised user api - admin----------------------------------------------------

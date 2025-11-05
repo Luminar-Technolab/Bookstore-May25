@@ -5,6 +5,7 @@ export const userAuthContext = createContext("")
 function AuthContex({children}) {
     const [role,setRole] = useState("")
     const [authorisedUser,setAuthorisedUser] = useState(false)
+
     useEffect(()=>{
         if(sessionStorage.getItem("user") && sessionStorage.getItem("token")){
             const user = JSON.parse(sessionStorage.getItem("user"))
@@ -12,6 +13,7 @@ function AuthContex({children}) {
             setAuthorisedUser(true)
         }
     },[role,authorisedUser])
+    
   return (
     <userAuthContext.Provider value={{role,authorisedUser,setAuthorisedUser}}>
         {children}
